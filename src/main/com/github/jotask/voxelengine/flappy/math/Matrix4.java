@@ -1,6 +1,6 @@
 package com.github.jotask.voxelengine.flappy.math;
 
-import com.github.jotask.voxelengine.flappy.BufferUtils;
+import com.github.jotask.voxelengine.flappy.utils.BufferUtils;
 
 import java.nio.FloatBuffer;
 
