@@ -1,4 +1,4 @@
-package com.github.jotask.voxelengine.flappy.input;
+package com.github.jotask.voxelengine.input;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallback;

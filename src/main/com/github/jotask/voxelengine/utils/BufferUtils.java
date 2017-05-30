@@ -1,4 +1,4 @@
-package com.github.jotask.voxelengine.flappy.utils;
+package com.github.jotask.voxelengine.utils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -21,10 +21,11 @@ public class BufferUtils {
         return result;
     }
 
-    public static FloatBuffer createFloatBuffer(float[] array){
-        FloatBuffer result = ByteBuffer.allocateDirect(array.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-        result.put(array).flip();
-        return result;
+    public static FloatBuffer createFloatBuffer(float[] data){
+        FloatBuffer buffer = org.lwjgl.BufferUtils.createFloatBuffer(data.length);
+        buffer.put(data);
+        buffer.flip();
+        return buffer;
     }
 
     public static IntBuffer createIntBuffer(int[] array){

@@ -1,8 +1,8 @@
-package com.github.jotask.voxelengine.flappy.graphic;
+package com.github.jotask.voxelengine.graphic;
 
-import com.github.jotask.voxelengine.flappy.math.Matrix4;
-import com.github.jotask.voxelengine.flappy.math.Vector3;
-import com.github.jotask.voxelengine.flappy.utils.ShaderUtils;
+import com.github.jotask.voxelengine.math.Matrix4;
+import com.github.jotask.voxelengine.math.Vector3;
+import com.github.jotask.voxelengine.utils.ShaderUtils;
 import org.lwjgl.opengl.GL20;
 
 import java.util.HashMap;
@@ -16,6 +16,13 @@ import java.util.Map;
  */
 public class Shader {
 
+    public static final int VERTEX_ATTRIB = 0;
+    public static final int TEXTURE_CORDINATE_ATTRIB = 1;
+
+    public static Shader bg;
+
+    private boolean enabled = false;
+
     private final int ID;
 
     private Map<String, Integer> uniforms = new HashMap<String, Integer>();
@@ -26,6 +33,10 @@ public class Shader {
         if(ID == -1)
             throw new IllegalStateException("Shader impossible to load");
 
+    }
+
+    public static void loadAll(){
+        bg = new Shader("shaders/bg_vert.glsl", "shaders/bg_frag.glsl");
     }
 
     public int getUniform(String name){
@@ -66,10 +77,12 @@ public class Shader {
 
     public void enable(){
         GL20.glUseProgram(ID);
+        enabled = true;
     }
 
     public void disable(){
         GL20.glUseProgram(ID);
+        enabled = false;
     }
 
 }

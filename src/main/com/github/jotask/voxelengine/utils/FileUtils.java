@@ -1,4 +1,4 @@
-package com.github.jotask.voxelengine.flappy.utils;
+package com.github.jotask.voxelengine.utils;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -21,7 +21,7 @@ public class FileUtils {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             String buffer;
             while((buffer = reader.readLine()) != null){
-                sb.append(buffer);
+                sb.append(buffer + '\n');
             }
             reader.close();
         }catch (FileNotFoundException e){

@@ -1,6 +1,6 @@
-package com.github.jotask.voxelengine.flappy.math;
+package com.github.jotask.voxelengine.math;
 
-import com.github.jotask.voxelengine.flappy.utils.BufferUtils;
+import com.github.jotask.voxelengine.utils.BufferUtils;
 
 import java.nio.FloatBuffer;
 
@@ -12,8 +12,8 @@ import java.nio.FloatBuffer;
  */
 public class Matrix4 {
 
-    public static final int SIZE = 4 * 4;
-    public float[] elements = new float[SIZE];
+    private static final int SIZE = 4 * 4;
+    private float[] elements = new float[SIZE];
 
     public Matrix4(){
 

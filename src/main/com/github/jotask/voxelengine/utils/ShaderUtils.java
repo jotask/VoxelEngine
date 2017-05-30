@@ -1,4 +1,4 @@
-package com.github.jotask.voxelengine.flappy.utils;
+package com.github.jotask.voxelengine.utils;
 
 import org.lwjgl.opengl.GL20;
 

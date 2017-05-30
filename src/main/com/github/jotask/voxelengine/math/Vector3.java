@@ -1,4 +1,4 @@
-package com.github.jotask.voxelengine.flappy.math;
+package com.github.jotask.voxelengine.math;
 
 /**
  * Vector3

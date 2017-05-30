@@ -1,6 +1,7 @@
-package com.github.jotask.voxelengine.flappy.graphic;
+package com.github.jotask.voxelengine.graphic;
 
-import com.github.jotask.voxelengine.flappy.utils.BufferUtils;
+import com.github.jotask.voxelengine.utils.BufferUtils;
+import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -54,11 +55,19 @@ public class Texture {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        glTexImage2D(GL_TEXTURE_2D, 0 , GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, BufferUtils.createIntBuffer(data));
+        GL11.glTexImage2D(GL_TEXTURE_2D, 0 , GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, BufferUtils.createIntBuffer(data));
 
         glBindTexture(GL_TEXTURE_2D, 0);
         return result;
 
+    }
+
+    public void bind(){
+        glBindTexture(GL_TEXTURE_2D, texture);
+    }
+
+    public void unbind(){
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
 }
