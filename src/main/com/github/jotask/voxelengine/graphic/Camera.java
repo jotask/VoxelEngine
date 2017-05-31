@@ -16,10 +16,10 @@ public abstract class Camera {
     public final Vector3 position = new Vector3();
 
     // THe unit length direction of the camera
-    public final Vector3 direction = new Vector3();
+    public final Vector3 direction = new Vector3(0,0,-1);
 
-    // the unit lenght up direction of the camera
-    public final Vector3 up = new Vector3();
+    // the unit length up direction of the camera
+    public final Vector3 up = new Vector3(0,1,0);
 
     // The projection matrix
     public final Matrix4 projection = new Matrix4();
@@ -34,7 +34,7 @@ public abstract class Camera {
     private final Vector3 tmp = new Vector3();
 
     public float near = 1;
-    public float far = 1000;
+    public float far = 100;
 
     public float viewportWidth = 0;
     public float viewportHeight = 0;

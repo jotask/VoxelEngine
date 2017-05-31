@@ -34,6 +34,7 @@ public class Renderer {
         }
         shader.start();
         shader.loadProjectionMatrix(combinedMatrix);
+        System.out.println(combinedMatrix);
     }
 
     public void end(){

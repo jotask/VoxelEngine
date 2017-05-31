@@ -968,6 +968,7 @@ public class Matrix4f {
         tmp[M32] = mata[M30] * matb[M02] + mata[M31] * matb[M12] + mata[M32] * matb[M22] + mata[M33] * matb[M32];
         tmp[M33] = mata[M30] * matb[M03] + mata[M31] * matb[M13] + mata[M32] * matb[M23] + mata[M33] * matb[M33];
 //        System.out.println(new Matrix4f(tmp));
+        this.set(tmp);
         return tmp;
     }
 

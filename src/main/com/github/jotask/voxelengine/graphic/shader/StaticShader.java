@@ -25,10 +25,12 @@ public class StaticShader extends ShaderProgram {
         super.getUniformLocation(Uniforms.PROJECTION.name().toLowerCase());
     }
 
+    // Transformation for each object
     public void loadTransformationMatrix(Matrix4 matrix){
         super.loadMatrix4(getUniformLocation(Uniforms.TRANSFORMATION.name().toLowerCase()), matrix);
     }
 
+    // Camera projection
     public void loadProjectionMatrix(Matrix4 matrix){
         super.loadMatrix4(getUniformLocation(Uniforms.PROJECTION.name().toLowerCase()), matrix);
     }
