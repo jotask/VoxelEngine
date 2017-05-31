@@ -2,7 +2,7 @@ package com.github.jotask.voxelengine.graphic.shader;
 
 import com.github.jotask.voxelengine.math.Matrix4;
 import com.github.jotask.voxelengine.math.Vector3;
-import com.github.jotask.voxelengine.utils.FileUtils;
+import com.github.jotask.voxelengine.file.FileUtils;
 import org.lwjgl.opengl.GL20;
 
 import java.nio.FloatBuffer;

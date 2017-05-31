@@ -36,6 +36,10 @@ public class GameObject {
         this.rotation.z += z;
     }
 
+    public void update(){
+        rotate(1, 1, 1);
+    }
+
     public ModelTexture getModel() {
         return model;
     }

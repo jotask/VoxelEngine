@@ -1,4 +1,4 @@
-package com.github.jotask.voxelengine.utils;
+package com.github.jotask.voxelengine.file;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

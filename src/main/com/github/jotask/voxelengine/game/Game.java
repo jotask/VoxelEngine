@@ -5,9 +5,13 @@ import com.github.jotask.voxelengine.engine.LWJGLApplication;
 import com.github.jotask.voxelengine.engine.renderer.Camera;
 import com.github.jotask.voxelengine.engine.renderer.Loader;
 import com.github.jotask.voxelengine.engine.renderer.Renderer;
+import com.github.jotask.voxelengine.file.OBJLoader;
 import com.github.jotask.voxelengine.graphic.shader.StaticShader;
 import com.github.jotask.voxelengine.model.ModelTexture;
 import com.github.jotask.voxelengine.model.RawModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Game
@@ -22,7 +26,7 @@ public class Game implements LWJGLApplication {
     private StaticShader shader;
     private Camera camera;
 
-    GameObject obj;
+    private List<GameObject> objs = new ArrayList<GameObject>();
 
     @Override
     public void init() {
@@ -34,18 +38,40 @@ public class Game implements LWJGLApplication {
 
         camera = new Camera();
 
-        RawModel raw = RawModel.createPrimitive(RawModel.PrimitiveType.CUBE, loader);
-        ModelTexture model = new ModelTexture(raw, loader.loadTexture("bricks.png"));
-        obj = new GameObject(model);
-        obj.move(0, 0, -1);
+        {
+            RawModel raw = RawModel.createPrimitive(RawModel.PrimitiveType.CUBE, loader);
+            ModelTexture model = new ModelTexture(raw, loader.loadTexture("bricks.png"));
+            GameObject obj = new GameObject(model);
+            obj.move(0, 0, -1);
+            objs.add(obj);
+        }
+
+        {
+            RawModel raw = OBJLoader.loadFile(loader, "testone.obj");
+            ModelTexture model = new ModelTexture(raw, loader.loadTexture("bricks.png"));
+            GameObject obj = new GameObject(model);
+            obj.move(5, 0, 0);
+            objs.add(obj);
+        }
+
+        {
+            RawModel raw = OBJLoader.loadFile(loader, "werido.obj");
+            ModelTexture model = new ModelTexture(raw, loader.loadTexture("bricks.png"));
+            GameObject obj = new GameObject(model);
+            obj.move(-5, 0, 0);
+            objs.add(obj);
+        }
+
 
     }
 
     @Override
     public void update() {
         camera.move();
-        obj.rotate(1, 1, 1);
-        obj.move(0, 0, -0.01f);
+        for(GameObject o: objs) {
+            o.update();
+        }
+
     }
 
     @Override
@@ -53,7 +79,8 @@ public class Game implements LWJGLApplication {
         sb.prepare();
         shader.start();
         shader.loadViewMatrix(camera);
-        sb.render(obj, shader);
+        for(GameObject o: objs)
+            sb.render(o, shader);
         shader.stop();
     }
 

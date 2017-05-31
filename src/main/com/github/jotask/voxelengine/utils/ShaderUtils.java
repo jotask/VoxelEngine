@@ -1,5 +1,6 @@
 package com.github.jotask.voxelengine.utils;
 
+import com.github.jotask.voxelengine.file.FileUtils;
 import org.lwjgl.opengl.GL20;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
