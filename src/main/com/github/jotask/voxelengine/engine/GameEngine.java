@@ -17,6 +17,9 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class GameEngine implements Runnable{
 
+    public static int WIDTH;
+    public static int HEIGHT;
+
     private final Thread thread;
 
     private long window;
@@ -27,6 +30,9 @@ public class GameEngine implements Runnable{
     private final EngineConfiguration cfg;
 
     public GameEngine(LWJGLApplication app, EngineConfiguration cfg) {
+
+        WIDTH = cfg.widht;
+        HEIGHT = cfg.height;
 
         this.app = app;
         this.cfg = cfg;

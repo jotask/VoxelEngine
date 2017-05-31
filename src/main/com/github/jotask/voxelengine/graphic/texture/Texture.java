@@ -1,4 +1,4 @@
-package com.github.jotask.voxelengine.graphic;
+package com.github.jotask.voxelengine.graphic.texture;
 
 import com.github.jotask.voxelengine.utils.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -70,4 +70,7 @@ public class Texture {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+    public int getTexture() {
+        return texture;
+    }
 }
