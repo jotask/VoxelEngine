@@ -28,10 +28,11 @@ public class BufferUtils {
         return buffer;
     }
 
-    public static IntBuffer createIntBuffer(int[] array){
-        IntBuffer result = ByteBuffer.allocateDirect(array.length * 4).order(ByteOrder.nativeOrder()).asIntBuffer();
-        result.put(array).flip();
-        return result;
+    public static IntBuffer createIntBuffer(int[] data){
+        IntBuffer buffer = org.lwjgl.BufferUtils.createIntBuffer(data.length);
+        buffer.put(data);
+        buffer.flip();
+        return buffer;
     }
 
 }

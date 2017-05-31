@@ -21,7 +21,7 @@ public class ShaderUtils {
         return create(vert, frag);
     }
 
-    public static int create(String vert, String frag){
+    private static int create(String vert, String frag){
         int program = GL20.glCreateProgram();
         int vertID = glCreateShader(GL_VERTEX_SHADER);
         int fragID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -30,22 +30,23 @@ public class ShaderUtils {
 
         glCompileShader(vertID);
         if(glGetShaderi(vertID, GL_COMPILE_STATUS) == GL_FALSE){
-            System.err.println("Failed to compile vertex Shader!");
+            System.err.println("Failed to compile vertex ShaderProgram!");
             System.err.println(glGetShaderInfoLog(vertID));
-            return -1;
+            System.exit(-1);
         }
 
         glCompileShader(fragID);
         if(glGetShaderi(fragID, GL_COMPILE_STATUS) == GL_FALSE){
-            System.err.println("Failed to compile fragment Shader!");
+            System.err.println("Failed to compile fragment ShaderProgram!");
             System.err.println(glGetShaderInfoLog(fragID));
-            return -1;
+            System.exit(-1);
         }
 
         glAttachShader(program, vertID);
         glAttachShader(program, fragID);
 
         glLinkProgram(program);
+
         glValidateProgram(program);
 
         glDeleteShader(vertID);
