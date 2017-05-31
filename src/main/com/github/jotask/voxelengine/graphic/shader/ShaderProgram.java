@@ -161,4 +161,8 @@ public abstract class ShaderProgram {
         GL20.glDeleteProgram(id);
     }
 
+    public void printLog(){
+        System.out.println(GL20.glGetShaderInfoLog(this.id));
+    }
+
 }

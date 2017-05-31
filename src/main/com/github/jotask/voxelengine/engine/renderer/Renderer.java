@@ -1,17 +1,9 @@
 package com.github.jotask.voxelengine.engine.renderer;
 
-import com.github.jotask.voxelengine.engine.GameEngine;
 import com.github.jotask.voxelengine.engine.GameObject;
-import com.github.jotask.voxelengine.graphic.shader.Attributes;
 import com.github.jotask.voxelengine.graphic.shader.StaticShader;
-import com.github.jotask.voxelengine.math.Maths;
 import com.github.jotask.voxelengine.math.Matrix4;
-import com.github.jotask.voxelengine.model.ModelTexture;
-import com.github.jotask.voxelengine.model.RawModel;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 
 /**
  * Render
@@ -21,58 +13,77 @@ import org.lwjgl.opengl.GL30;
  */
 public class Renderer {
 
-    private static final float FOV = 70;
-    private static final float NEAR = 0.1f;
-    private static final float FAR = 1000f;
-    private Matrix4 projectionMatrix;
+    private final Matrix4 projectionMatrix = new Matrix4();
+    private final Matrix4 transforMatrix = new Matrix4();
+    private final Matrix4 combinedMatrix = new Matrix4();
 
-    public Renderer(StaticShader shader) {
-        createProjectionMatrix();
+    private boolean dirty;
+
+    private final StaticShader shader;
+
+    public Renderer() {
+        this.shader = new StaticShader();
+    }
+
+    public void begin(){
+        this.prepare();
+        if(dirty){
+            combinedMatrix.set(projectionMatrix);
+            combinedMatrix.mul(transforMatrix);
+            dirty = false;
+        }
         shader.start();
-        shader.loadProjectionMatrix(projectionMatrix);
+        shader.loadProjectionMatrix(combinedMatrix);
+    }
+
+    public void end(){
         shader.stop();
     }
 
     public void prepare(){
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glClearColor(1, 0, 0, 1);
+        GL11.glClearColor(1, 1, 1, 1);
     }
 
-    public void render(GameObject obj, StaticShader shader){
+    public void render(GameObject obj){
 
-        ModelTexture modelTexture = obj.getModel();
-        RawModel raw = modelTexture.getRawModel();
-        GL30.glBindVertexArray(raw.getVaoID());
-        GL20.glEnableVertexAttribArray(Attributes.VERTEX_POSITIONS.ordinal());
-        GL20.glEnableVertexAttribArray(Attributes.TEXTURE_COORD.ordinal());
+        obj.render(this);
 
-        Matrix4 transformationMatrix = Maths.createTransformationMatrix(obj.getPosition(), obj.getRotation(), obj.getScale());
-
-        shader.loadTransformationMatrix(transformationMatrix);
-
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, modelTexture.getTexture().getTexture());
-        GL11.glDrawElements(GL11.GL_TRIANGLES, raw.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-        GL20.glDisableVertexAttribArray(Attributes.VERTEX_POSITIONS.ordinal());
-        GL20.glDisableVertexAttribArray(Attributes.TEXTURE_COORD.ordinal());
-        GL30.glBindVertexArray(0);
+//        ModelTexture modelTexture = obj.getModel();
+//        RawModel raw = modelTexture.getRawModel();
+//        GL30.glBindVertexArray(raw.getVaoID());
+//        GL20.glEnableVertexAttribArray(Attributes.VERTEX_POSITIONS.ordinal());
+//        GL20.glEnableVertexAttribArray(Attributes.TEXTURE_COORD.ordinal());
+//
+//        Transformation t = obj.getTransformation();
+//
+//        Matrix4 transformationMatrix = Maths.createTransformationMatrix(t.getPosition(), t.getRotation(), t.getScale());
+//
+//        shader.loadTransformationMatrix(transformationMatrix);
+//
+//        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+//        GL11.glBindTexture(GL11.GL_TEXTURE_2D, modelTexture.getTexture().getTexture());
+//        GL11.glDrawElements(GL11.GL_TRIANGLES, raw.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+//        GL20.glDisableVertexAttribArray(Attributes.VERTEX_POSITIONS.ordinal());
+//        GL20.glDisableVertexAttribArray(Attributes.TEXTURE_COORD.ordinal());
+//        GL30.glBindVertexArray(0);
 
     }
 
-    private void createProjectionMatrix(){
-        float aspectRatio = ((float)GameEngine.WIDTH / (float)GameEngine.HEIGHT);
-        float yScale = (float) (( 1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);
-        float xScale = (yScale / aspectRatio);
-        float fustrumLength = FAR - NEAR;
+    /** Sets the projection matrix to be used for rendering. Usually this will be set to {@link Camera#combined}.
+     * @param matrix */
+    public void setProjectionMatrix(Matrix4 matrix){
+        projectionMatrix.set(matrix);
+        dirty = true;
+    }
 
-        this.projectionMatrix = new Matrix4();
-        this.projectionMatrix.m00 = xScale;
-        this.projectionMatrix.m11 = yScale;
-        this.projectionMatrix.m22 = -((FAR + NEAR) / fustrumLength);
-        this.projectionMatrix.m23 = -1;
-        this.projectionMatrix.m32 = -((2 * NEAR * FAR) / fustrumLength);
-        this.projectionMatrix.m33 = 0;
+    public StaticShader getShader() {
+        return shader;
+    }
+
+    public void dispose() {
+        this.shader.dispose();
     }
 
 }

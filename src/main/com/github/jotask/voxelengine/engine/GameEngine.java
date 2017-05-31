@@ -70,7 +70,7 @@ public class GameEngine implements Runnable{
 
         GL.createCapabilities();
 
-        System.out.println("OpenGL: " + glGetString(GL_VERSION));
+//        System.out.println("OpenGL: " + glGetString(GL_VERSION));
 
     }
 
@@ -129,7 +129,7 @@ public class GameEngine implements Runnable{
 
             if(System.currentTimeMillis() - timer > 1000){
                 timer += 1000;
-                System.out.println("Ups: " + updates + " Fps: " + frames);
+//                System.out.println("Ups: " + updates + " Fps: " + frames);
                 updates = 0;
                 frames = 0;
             }

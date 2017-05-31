@@ -1,7 +1,9 @@
 package com.github.jotask.voxelengine.engine;
 
-import com.github.jotask.voxelengine.math.Vector3;
-import com.github.jotask.voxelengine.model.ModelTexture;
+import com.github.jotask.voxelengine.engine.components.Component;
+import com.github.jotask.voxelengine.engine.renderer.Renderer;
+
+import java.util.HashMap;
 
 /**
  * GameObject
@@ -11,60 +13,43 @@ import com.github.jotask.voxelengine.model.ModelTexture;
  */
 public class GameObject {
 
-    private ModelTexture model;
+    private final Transformation transformation;
 
-    private Vector3 position;
-    private Vector3 rotation;
-    private Vector3 scale;
+    private HashMap<String, Component> components;
 
-    public GameObject(ModelTexture model) {
-        this.model = model;
-        this.position = new Vector3();
-        this.rotation = new Vector3();
-        this.scale = new Vector3(1, 1, 1);
+    public GameObject() {
+        this.components = new HashMap<String, Component>();
+        this.transformation = new Transformation();
     }
 
-    public void move(float x, float y, float z){
-        this.position.x += x;
-        this.position.y += y;
-        this.position.z += z;
+    public void addComponent(Component component){
+        if(this.components.containsKey(component)){
+            System.out.println("Component: " + component.name + " already on this object");
+            return;
+        }
+        this.components.put(component.name, component);
     }
 
-    public void rotate(float x, float y, float z){
-        this.rotation.x += x;
-        this.rotation.y += y;
-        this.rotation.z += z;
-    }
 
     public void update(){
-        rotate(1, 1, 1);
+        this.transformation.rotate(1, 1, 1);
+        for(final Component c: this.components.values()){
+            c.update();
+        }
     }
 
-    public ModelTexture getModel() {
-        return model;
+    public void render(Renderer sb){
+        for(final Component c: this.components.values()){
+            c.render(sb, this);
+        }
     }
 
-    public Vector3 getPosition() {
-        return position;
+    public void dispose(){
+        for(final Component c: this.components.values()){
+            c.dispose();
+        }
     }
 
-    public void setPosition(Vector3 position) {
-        this.position = position;
-    }
+    public Transformation getTransformation() { return transformation; }
 
-    public Vector3 getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(Vector3 rotation) {
-        this.rotation = rotation;
-    }
-
-    public Vector3 getScale() {
-        return scale;
-    }
-
-    public void setScale(Vector3 scale) {
-        this.scale = scale;
-    }
 }
