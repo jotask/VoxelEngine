@@ -30,6 +30,8 @@ package com.github.jotask.voxelengine.math;/*
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import com.github.jotask.voxelengine.test.Matrix4f;
+
 import java.nio.FloatBuffer;
 
 /**
@@ -38,7 +40,6 @@ import java.nio.FloatBuffer;
  * @author foo
  */
 public class Matrix4 {
-    private static final long serialVersionUID = 1L;
 
     public float m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33;
 
@@ -46,7 +47,6 @@ public class Matrix4 {
      * Construct a new matrix, initialized to the identity.
      */
     public Matrix4() {
-        super();
         setIdentity();
     }
 
@@ -99,6 +99,25 @@ public class Matrix4 {
         m.m33 = 1.0f;
 
         return m;
+    }
+
+    public void set(Matrix4 other){
+        this.m00 = other.m00;
+        this.m01 = other.m01;
+        this.m02 = other.m02;
+        this.m03 = other.m03;
+        this.m10 = other.m10;
+        this.m11 = other.m11;
+        this.m12 = other.m12;
+        this.m13 = other.m13;
+        this.m20 = other.m20;
+        this.m21 = other.m21;
+        this.m22 = other.m22;
+        this.m23 = other.m23;
+        this.m30 = other.m30;
+        this.m31 = other.m31;
+        this.m32 = other.m32;
+        this.m33 = other.m33;
     }
 
     /**
@@ -230,6 +249,101 @@ public class Matrix4 {
 
         return this;
     }
+
+    /** Sets the matrix to a projection matrix with a near- and far plane, a field of view in degrees and an aspect ratio. Note that
+     * the field of view specified is the angle in degrees for the height, the field of view for the width will be calculated
+     * according to the aspect ratio.
+     *
+     * @param near The near plane
+     * @param far The far plane
+     * @param fovy The field of view of the height in degrees
+     * @param aspectRatio The "width over height" aspect ratio
+     * @return This matrix for the purpose of chaining methods together. */
+    public Matrix4 setToProjection (float near, float far, float fovy, float aspectRatio) {
+        this.setIdentity();
+        float l_fd = (float)(1.0 / Math.tan((fovy * (Math.PI / 180)) / 2.0));
+        float l_a1 = (far + near) / (near - far);
+        float l_a2 = (2 * far * near) / (near - far);
+        m00 = l_fd / aspectRatio;
+        m10 = 0;
+        m20 = 0;
+        m30 = 0;
+        m01 = 0;
+        m11 = l_fd;
+        m21 = 0;
+        m31 = 0;
+        m02 = 0;
+        m12 = 0;
+        m22 = l_a1;
+        m23 = -1;
+        m03 = 0;
+        m13 = 0;
+        m32 = l_a2;
+        m33 = 0;
+
+        return this;
+    }
+
+    /** Sets the matrix to a look at matrix with a direction and an up vector. Multiply with a translation matrix to get a camera
+     * model view matrix.
+     *
+     * @param direction The direction vector
+     * @param up The up vector
+     * @return This matrix for the purpose of chaining methods together. */
+    public Matrix4 setToLookAt (Vector3 direction, Vector3 up) {
+        Vector3 l_vez = new Vector3().set(direction).nor();
+        Vector3 l_vex = new Vector3().set(direction).nor();
+        l_vex.crs(up).nor();
+        Vector3 l_vey = new Vector3().set(l_vex).crs(l_vez).nor();
+        this.setIdentity();
+
+        m00 = l_vex.x;
+        m10 = l_vex.y;
+        m20 = l_vex.z;
+
+        m01 = l_vey.x;
+        m11 = l_vey.y;
+        m21 = l_vey.z;
+
+        m02 = -l_vez.x;
+        m12 = -l_vez.y;
+        m22 = -l_vez.z;
+
+        return this;
+    }
+    /** Sets this matrix to a look at matrix with the given position, target and up vector.
+     *
+     * @param position the position
+     * @param target the target
+     * @param up the up vector
+     * @return This matrix */
+    public Matrix4 setToLookAt (Vector3 position, Vector3 target, Vector3 up) {
+        Vector3 tmp = new Vector3(target).sub(position);
+        setToLookAt(tmp, up);
+        this.mul(new Matrix4().setToTranslation(-position.x, -position.y, -position.z));
+        return this;
+    }
+
+    public Matrix4 mul (Matrix4 matrix){
+        mul(this, matrix);
+        return this;
+    }
+
+    /** Sets this matrix to a translation matrix, overwriting it first by an identity matrix and then setting the 4th column to the
+     * translation vector.
+     *
+     * @param x The x-component of the translation vector.
+     * @param y The y-component of the translation vector.
+     * @param z The z-component of the translation vector.
+     * @return This matrix for the purpose of chaining methods together. */
+    public Matrix4 setToTranslation (float x, float y, float z) {
+        this.setIdentity();
+        m03 = x;
+        m13 = y;
+        m23 = z;
+        return this;
+    }
+
 
     /**
      * Store this matrix in a float buffer. The matrix is stored in column
@@ -368,9 +482,7 @@ public class Matrix4 {
      * @param dest The destination matrix, or null if a new one is to be created
      * @return the destination matrix
      */
-    public static Matrix4 mul(Matrix4 left, Matrix4 right, Matrix4 dest) {
-        if (dest == null)
-            dest = new Matrix4();
+    public Matrix4 mul(Matrix4 left, Matrix4 right) {
 
         float m00 = left.m00 * right.m00 + left.m10 * right.m01 + left.m20 * right.m02 + left.m30 * right.m03;
         float m01 = left.m01 * right.m00 + left.m11 * right.m01 + left.m21 * right.m02 + left.m31 * right.m03;
@@ -389,24 +501,24 @@ public class Matrix4 {
         float m32 = left.m02 * right.m30 + left.m12 * right.m31 + left.m22 * right.m32 + left.m32 * right.m33;
         float m33 = left.m03 * right.m30 + left.m13 * right.m31 + left.m23 * right.m32 + left.m33 * right.m33;
 
-        dest.m00 = m00;
-        dest.m01 = m01;
-        dest.m02 = m02;
-        dest.m03 = m03;
-        dest.m10 = m10;
-        dest.m11 = m11;
-        dest.m12 = m12;
-        dest.m13 = m13;
-        dest.m20 = m20;
-        dest.m21 = m21;
-        dest.m22 = m22;
-        dest.m23 = m23;
-        dest.m30 = m30;
-        dest.m31 = m31;
-        dest.m32 = m32;
-        dest.m33 = m33;
+        this.m00 = m00;
+        this.m01 = m01;
+        this.m02 = m02;
+        this.m03 = m03;
+        this.m10 = m10;
+        this.m11 = m11;
+        this.m12 = m12;
+        this.m13 = m13;
+        this.m20 = m20;
+        this.m21 = m21;
+        this.m22 = m22;
+        this.m23 = m23;
+        this.m30 = m30;
+        this.m31 = m31;
+        this.m32 = m32;
+        this.m33 = m33;
 
-        return dest;
+        return this;
     }
 
     /**
@@ -806,4 +918,77 @@ public class Matrix4 {
 
         return dest;
     }
+
+    public static Matrix4 mult(Matrix4 a, Matrix4 b){
+        Matrix4 tmp = new Matrix4();
+        tmp.m00 = (a.m00 * b.m00) + (a.m10 * b.m01) + (a.m20 * b.m02) + (a.m30 * b.m03);
+        tmp.m00 = a.m00 * b.m00 + a.m01 * b.m10 + a.m02 * b.m20 + a.m03 * b.m30;
+        tmp.m01 = a.m00 * b.m01 + a.m01 * b.m11 + a.m02 * b.m21 + a.m03 * b.m31;
+        tmp.m02 = a.m00 * b.m02 + a.m01 * b.m12 + a.m02 * b.m22 + a.m03 * b.m32;
+        tmp.m03 = a.m00 * b.m03 + a.m01 * b.m13 + a.m02 * b.m23 + a.m03 * b.m33;
+        tmp.m10 = a.m10 * b.m00 + a.m11 * b.m10 + a.m12 * b.m20 + a.m13 * b.m30;
+        tmp.m11 = a.m10 * b.m01 + a.m11 * b.m11 + a.m12 * b.m21 + a.m13 * b.m31;
+        tmp.m12 = a.m10 * b.m02 + a.m11 * b.m12 + a.m12 * b.m22 + a.m13 * b.m32;
+        tmp.m13 = a.m10 * b.m03 + a.m11 * b.m13 + a.m12 * b.m23 + a.m13 * b.m33;
+        tmp.m20 = a.m20 * b.m00 + a.m21 * b.m10 + a.m22 * b.m20 + a.m23 * b.m30;
+        tmp.m21 = a.m20 * b.m01 + a.m21 * b.m11 + a.m22 * b.m21 + a.m23 * b.m31;
+        tmp.m22 = a.m20 * b.m02 + a.m21 * b.m12 + a.m22 * b.m22 + a.m23 * b.m32;
+        tmp.m23 = a.m20 * b.m03 + a.m21 * b.m13 + a.m22 * b.m23 + a.m23 * b.m33;
+        tmp.m30 = a.m30 * b.m00 + a.m31 * b.m10 + a.m32 * b.m20 + a.m33 * b.m30;
+        tmp.m31 = a.m30 * b.m01 + a.m31 * b.m11 + a.m32 * b.m21 + a.m33 * b.m31;
+        tmp.m32 = a.m30 * b.m02 + a.m31 * b.m12 + a.m32 * b.m22 + a.m33 * b.m32;
+        tmp.m33 = a.m30 * b.m03 + a.m31 * b.m13 + a.m32 * b.m23 + a.m33 * b.m33;
+        a.set(tmp);
+//        System.out.println(a);
+        return a;
+    }
+
+    public float[] getValues(){
+        float[] tmp = new float[16];
+        tmp[0] = m00;
+        tmp[1] = m01;
+        tmp[2] = m02;
+        tmp[3] = m03;
+        tmp[4] = m10;
+        tmp[5] = m11;
+        tmp[6] = m12;
+        tmp[7] = m13;
+        tmp[8] = m20;
+        tmp[9] = m21;
+        tmp[10] = m22;
+        tmp[11] = m23;
+        tmp[12] = m30;
+        tmp[13] = m31;
+        tmp[14] = m32;
+        tmp[15] = m33;
+        return tmp;
+    }
+
+    public Matrix4 multiplicar(Matrix4 a, Matrix4 b){
+        Matrix4f aa = new Matrix4f(a.getValues());
+        Matrix4f bb = new Matrix4f(b.getValues());
+        aa.mul(bb);
+        a.set(aa.getValues());
+        return a;
+    }
+
+    public void set(float[] v){
+        m00 = v[0];
+        m01 = v[1];
+        m02 = v[2];
+        m03 = v[3];
+        m10 = v[4];
+        m11 = v[5];
+        m12 = v[6];
+        m13 = v[7];
+        m20 = v[8];
+        m21 = v[9];
+        m22 = v[0];
+        m23 = v[10];
+        m30 = v[11];
+        m31 = v[12];
+        m32 = v[13];
+        m33 = v[14];
+    }
+
 }
