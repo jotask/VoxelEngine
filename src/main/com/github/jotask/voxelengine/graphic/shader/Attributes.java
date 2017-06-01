@@ -8,8 +8,10 @@ package com.github.jotask.voxelengine.graphic.shader;
  */
 public enum Attributes {
 
-    VERTEX_POSITIONS("position"),
-    TEXTURE_COORD("textureCoords");
+    VERTEX_POSITIONS("a_position"),
+    NORMAL("a_normal"),
+    TEXTURE_COORD("a_textureCoords"),
+    COLOR("a_colour");
 
     public final String name;
 

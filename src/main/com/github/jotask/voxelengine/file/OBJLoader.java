@@ -31,9 +31,9 @@ public class OBJLoader {
 
         BufferedReader reader = new BufferedReader(fr);
         String line;
-        List<Vector3> vertices = new ArrayList<Vector3>();
-        List<Vector2> uvs = new ArrayList<Vector2>();
-        List<Vector3> normals = new ArrayList<Vector3>();
+        List<Vector3> vertices = new ArrayList<>();
+        List<Vector2> uvs = new ArrayList<>();
+        List<Vector3> normals = new ArrayList<>();
         List<Integer> indices = new ArrayList<>();
 
         float[] verticesArray = null;
@@ -122,7 +122,7 @@ public class OBJLoader {
 //        uvsArray[currentVertexPointer * 2 + 1] = 1 - currentUV.y;
 
         Vector3 currentNormal = normals.get(Integer.parseInt(data[2]) - 1);
-        normalArray[currentVertexPointer * 3 + 0] = currentNormal.x;
+        normalArray[currentVertexPointer * 3] = currentNormal.x;
         normalArray[currentVertexPointer * 3 + 1] = currentNormal.x;
         normalArray[currentVertexPointer * 3 + 2] = currentNormal.x;
 

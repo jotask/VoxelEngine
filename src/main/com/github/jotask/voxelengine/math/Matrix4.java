@@ -30,8 +30,6 @@ package com.github.jotask.voxelengine.math;/*
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.github.jotask.voxelengine.test.Matrix4f;
-
 import java.nio.FloatBuffer;
 
 /**
@@ -59,12 +57,10 @@ public class Matrix4 {
      * Returns a string representation of this matrix
      */
     public String toString() {
-        StringBuilder buf = new StringBuilder();
-        buf.append(m00).append(' ').append(m10).append(' ').append(m20).append(' ').append(m30).append('\n');
-        buf.append(m01).append(' ').append(m11).append(' ').append(m21).append(' ').append(m31).append('\n');
-        buf.append(m02).append(' ').append(m12).append(' ').append(m22).append(' ').append(m32).append('\n');
-        buf.append(m03).append(' ').append(m13).append(' ').append(m23).append(' ').append(m33).append('\n');
-        return buf.toString();
+        return String.valueOf(m00) + ' ' + m10 + ' ' + m20 + ' ' + m30 + '\n' +
+                m01 + ' ' + m11 + ' ' + m21 + ' ' + m31 + '\n' +
+                m02 + ' ' + m12 + ' ' + m22 + ' ' + m32 + '\n' +
+                m03 + ' ' + m13 + ' ' + m23 + ' ' + m33 + '\n';
     }
 
     /**
@@ -479,7 +475,6 @@ public class Matrix4 {
      * Multiply the right matrix by the left and place the result in a third matrix.
      * @param left The left source matrix
      * @param right The right source matrix
-     * @param dest The destination matrix, or null if a new one is to be created
      * @return the destination matrix
      */
     public Matrix4 mul(Matrix4 left, Matrix4 right) {
@@ -962,14 +957,6 @@ public class Matrix4 {
         tmp[14] = m32;
         tmp[15] = m33;
         return tmp;
-    }
-
-    public Matrix4 multiplicar(Matrix4 a, Matrix4 b){
-        Matrix4f aa = new Matrix4f(a.getValues());
-        Matrix4f bb = new Matrix4f(b.getValues());
-        aa.mul(bb);
-        a.set(aa.getValues());
-        return a;
     }
 
     public void set(float[] v){

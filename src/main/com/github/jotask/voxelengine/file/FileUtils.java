@@ -21,7 +21,7 @@ public class FileUtils {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             String buffer;
             while((buffer = reader.readLine()) != null){
-                sb.append(buffer + '\n');
+                sb.append(buffer).append('\n');
             }
             reader.close();
         }catch (FileNotFoundException e){

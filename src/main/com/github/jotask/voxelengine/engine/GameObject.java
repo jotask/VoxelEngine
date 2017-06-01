@@ -18,13 +18,13 @@ public class GameObject {
     private HashMap<String, Component> components;
 
     public GameObject() {
-        this.components = new HashMap<String, Component>();
+        this.components = new HashMap<>();
         this.transformation = new Transformation();
     }
 
     public void addComponent(Component component){
         if(this.components.containsKey(component)){
-            System.out.println("Component: " + component.name + " already on this object");
+            System.err.println("Component: " + component.name + " already on this object");
             return;
         }
         this.components.put(component.name, component);
@@ -33,6 +33,7 @@ public class GameObject {
 
     public void update(){
         this.transformation.rotate(1, 1, 1);
+        this.transformation.move(0,0,0f);
         for(final Component c: this.components.values()){
             c.update();
         }

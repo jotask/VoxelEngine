@@ -26,7 +26,7 @@ public abstract class ShaderProgram {
 
     private static final FloatBuffer matrixBuffer = org.lwjgl.BufferUtils.createFloatBuffer(4*4);
 
-    private Map<String, Integer> uniforms = new HashMap<String, Integer>();
+    private Map<String, Integer> uniforms = new HashMap<>();
 
     public ShaderProgram(String vertexFile, String fragmentFile){
 

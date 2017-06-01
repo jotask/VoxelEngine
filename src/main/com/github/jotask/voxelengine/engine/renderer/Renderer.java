@@ -13,12 +13,6 @@ import org.lwjgl.opengl.GL11;
  */
 public class Renderer {
 
-    private final Matrix4 projectionMatrix = new Matrix4();
-    private final Matrix4 transforMatrix = new Matrix4();
-    private final Matrix4 combinedMatrix = new Matrix4();
-
-    private boolean dirty;
-
     private final StaticShader shader;
 
     public Renderer() {
@@ -27,14 +21,11 @@ public class Renderer {
 
     public void begin(){
         this.prepare();
-        if(dirty){
-            combinedMatrix.set(projectionMatrix);
-            combinedMatrix.mul(transforMatrix);
-            dirty = false;
-        }
         shader.start();
-        shader.loadProjectionMatrix(combinedMatrix);
-        System.out.println(combinedMatrix);
+    }
+
+    public void setProjectionMatrix(Matrix4 matrix){
+        this.shader.loadProjectionMatrix(matrix);
     }
 
     public void end(){
@@ -70,13 +61,6 @@ public class Renderer {
 //        GL20.glDisableVertexAttribArray(Attributes.TEXTURE_COORD.ordinal());
 //        GL30.glBindVertexArray(0);
 
-    }
-
-    /** Sets the projection matrix to be used for rendering. Usually this will be set to {@link Camera#combined}.
-     * @param matrix */
-    public void setProjectionMatrix(Matrix4 matrix){
-        projectionMatrix.set(matrix);
-        dirty = true;
     }
 
     public StaticShader getShader() {
